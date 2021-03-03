@@ -16,21 +16,20 @@ def refreshScreen(timeToMax, currentResin):
 
 def updateTimeResin(currentTime, currentResin):
     global counter
-    if(currentTime.hour >= 0):
-        if(currentTime.minute >= 0):
-            if(currentTime.second > 0):
-                currentTime = datetime.time(currentTime.hour, currentTime.minute, currentTime.second - 1)
-            else:
-                currentTime = datetime.time(currentTime.hour, currentTime.minute-1, 59)
-                if(counter < 8):
-                    counter += 1
-                else:
-                    counter = 0
-                    currentResin += 1
-        else:
-            currentTime = datetime.time(currentTime.hour - 1, 59, 59)
+    if(currentTime.second > 0):
+        currentTime = datetime.time(currentTime.hour, currentTime.minute, currentTime.second - 1)
     else:
-        currentTime = datetime.time(0,0,0)
+        if(currentTime.minute != 0):
+            currentTime = datetime.time(currentTime.hour, currentTime.minute-1, 59)
+            if(counter < 8):
+                counter += 1
+            else:
+                counter = 0
+                currentResin += 1
+        elif(currentTime.minute == 0 and currentTime.hour != 0):
+            currentTime = datetime.time(currentTime.hour - 1, 59, 59)
+        else:
+            currentTime = datetime.time(0,0,0)
     return [currentTime, currentResin]
 
 
@@ -48,7 +47,7 @@ def main():
                     print("I didn't think you were braindead enough to put a number like that.")
                     currentResin = int(input("Enter current amount of resin: "))
                 except ValueError:
-                    print("Put a number, fool.")
+                    print("Invalid input.")
                     time.sleep(1)
             rawTime = float((160-currentResin) * 8)
             hoursLeft = float(rawTime / 60)
@@ -66,7 +65,7 @@ def main():
                     print("IT'S GAMER TIME BABY GO GET THAT TRASH")
                     break
         except ValueError:
-            print("Put a number, fool.")
+            print("Invalid input.")
             time.sleep(1)
 
 main()
